@@ -1,30 +1,32 @@
 <template>
-  <table>
-    <thead>
-      <tr class="bg-gray-100 border-b-2 border-gray-400">
-        <th></th>
-        <th>
-          <span>Ranking</span>
-        </th>
-        <th>Nombre</th>
-        <th>Precio</th>
-        <th>Cap. de Mercado</th>
-        <th>Variación 24hs</th>
-        <td class="hidden sm:block"></td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="border-b border-gray-100 hover:bg-gray-100 hover:bg-orange-100">
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="hidden sm:block"></td>
-      </tr>
-    </tbody>
-  </table>
+  <div>
+    <table>
+      <thead>
+        <tr class="bg-gray-100 border-b-2 border-gray-400">
+          <th></th>
+          <th>
+            <span>Ranking</span>
+          </th>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Cap. de Mercado</th>
+          <th>Variación 24hs</th>
+          <td class="hidden sm:block"></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-gray-100 hover:bg-gray-100 hover:bg-orange-100">
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="hidden sm:block"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script>
