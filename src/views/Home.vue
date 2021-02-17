@@ -1,5 +1,8 @@
 <template>
-  <px-assets-table :assets="assets" />
+  <div>
+    <grid-loader :loading="isLoading" :color="'#68D391'" :size="50" />
+    <px-assets-table v-if="!isLoading" :assets="assets" />
+  </div>
 </template>
 
 <script>
@@ -13,11 +16,16 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       assets: []
     };
   },
   created() {
-    api.getAssets().then(assets => (this.assets = assets));
+    this.isLoading = true;
+    api
+      .getAssets()
+      .then(assets => (this.assets = assets))
+      .finally(() => (this.isLoading = false));
   }
 };
 </script>

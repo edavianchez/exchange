@@ -1,6 +1,9 @@
 <template>
   <div class="flex-col">
-    <template v-if="asset.id">
+    <div class="flex justify-center">
+      <grid-loader :loading="isLoading" :color="'#68D391'" :size="50" />
+    </div>
+    <template v-if="!isLoading">
       <div class="flex flex-col sm:flex-row justify-around items-center">
         <div class="flex flex-col items-center">
           <img
@@ -61,6 +64,16 @@
           <span class="text-xl"></span>
         </div>
       </div>
+      <div class="my-10 h-64" id="chart-coin">
+        <line-chart
+          :id="'chart-coin'"
+          :curve="false"
+          :colors="['green']"
+          :min="min"
+          :max="max"
+          :data="chartData"
+        />
+      </div>
     </template>
   </div>
 </template>
@@ -72,6 +85,8 @@ export default {
   name: "CoinDetail",
   data() {
     return {
+      isLoading: false,
+      showGraphic: false,
       asset: {},
       history: []
     };
@@ -81,13 +96,14 @@ export default {
   },
   methods: {
     getCoin() {
+      this.isLoading = true;
       const id = this.$route.params.id;
-      Promise.all([api.getAsset(id), api.getAssetHistory(id)]).then(
-        ([asset, history]) => {
+      Promise.all([api.getAsset(id), api.getAssetHistory(id)])
+        .then(([asset, history]) => {
           this.asset = asset;
           this.history = history;
-        }
-      );
+        })
+        .finally(() => (this.isLoading = false));
     }
   },
   computed: {
@@ -106,6 +122,13 @@ export default {
         this.history.reduce((a, h) => a + parseFloat(h.priceUsd), 0) /
         this.history.length
       );
+    },
+    chartData() {
+      const data = [];
+      this.history.map(h => {
+        data.push([h.date, parseFloat(h.priceUsd).toFixed(2)]);
+      });
+      return data;
     }
   }
 };
