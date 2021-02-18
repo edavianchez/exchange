@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <table>
+  <div class="w-full overflow-auto bg-gray-100 rounded-md shadow">
+    <table class="w-full">
       <thead>
         <tr class="bg-gray-100 border-b-2 border-gray-400">
           <th></th>
