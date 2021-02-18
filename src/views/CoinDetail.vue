@@ -74,34 +74,76 @@
           :data="chartData"
         />
       </div>
+      <h3 class="text-xl my-10">Mejores Ofertas de Cambio</h3>
+      <table>
+        <tr
+          v-for="market in markets"
+          :key="`${market.exchangeId}-${market.priceUsd}`"
+          class="border-b"
+        >
+          <td>
+            <b>{{ market.exchangeId }}</b>
+          </td>
+          <td>{{ market.priceUsd | dollar }}</td>
+          <td>{{ market.baseSymbol }} / {{ market.quoteSymbol }}</td>
+          <td>
+            <px-button
+              v-if="!market.url"
+              :is-loading="market.isLoading || false"
+              @go="getWebsite(market)"
+            >
+              <span>Obtener Link</span>
+            </px-button>
+            <a v-else class="hover:underline text-green-600" target="_blank">{{
+              market.url
+            }}</a>
+          </td>
+        </tr>
+      </table>
     </template>
   </div>
 </template>
 
 <script>
+import PxButton from "@/components/PxButton";
 import api from "@/api";
 
 export default {
   name: "CoinDetail",
+  components: { PxButton },
   data() {
     return {
       isLoading: false,
-      showGraphic: false,
       asset: {},
-      history: []
+      history: [],
+      markets: []
     };
   },
   created() {
     this.getCoin();
   },
   methods: {
+    getWebsite(exchange) {
+      this.$set(exchange, "isLoading", true);
+      return api
+        .getExchange(exchange.exchangeId)
+        .then(res => {
+          this.$set(exchange, "url", res.exchangeUrl);
+        })
+        .finally(() => this.$set(exchange, "isLoading", false));
+    },
     getCoin() {
       this.isLoading = true;
       const id = this.$route.params.id;
-      Promise.all([api.getAsset(id), api.getAssetHistory(id)])
-        .then(([asset, history]) => {
+      Promise.all([
+        api.getAsset(id),
+        api.getAssetHistory(id),
+        api.getMarkets(id)
+      ])
+        .then(([asset, history, markets]) => {
           this.asset = asset;
           this.history = history;
+          this.markets = markets;
         })
         .finally(() => (this.isLoading = false));
     }
@@ -129,6 +171,11 @@ export default {
         data.push([h.date, parseFloat(h.priceUsd).toFixed(2)]);
       });
       return data;
+    }
+  },
+  watch: {
+    $route() {
+      this.getCoin();
     }
   }
 };
